@@ -10,7 +10,8 @@ const HomePage = ({ isAuthenticated, logout }) => (
   <div>
     <h1>HomePage</h1>
     {/* When we click on logout, we dispatch the thunk logout action from the auth action */}
-    { isAuthenticated ? <Button onClick={() => logout() }>Logout</Button> : <Link to='/login'>Login</Link> }
+    { isAuthenticated ? <Button onClick={() => logout() }>Logout</Button> :
+      (<div><Link to='/login'>Login</Link> or <Link to='/signup'>Sign Up</Link></div>) }
   </div>
 );
 

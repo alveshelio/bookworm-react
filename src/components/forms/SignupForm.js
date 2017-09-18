@@ -5,7 +5,7 @@ import validator from 'validator';
 
 import InlineError from '../messages/InlineError';
 
-class LoginForm extends Component {
+class SignupForm extends Component {
   state = {
     data: {
       email: '',
@@ -71,14 +71,14 @@ class LoginForm extends Component {
           />
           {errors.password && <InlineError text={errors.password} />}
         </Form.Field>
-        <Button primary>Login</Button>
+        <Button primary>Sign Up</Button>
       </Form>
     );
   }
 }
 
-LoginForm.propTypes = {
+SignupForm.propTypes = {
   submit: PropTypes.func.isRequired,
 };
 
-export default LoginForm;
+export default SignupForm;
