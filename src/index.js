@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, Route } from 'react-router-dom';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
@@ -26,10 +26,18 @@ if (localStorage.bookwormJWT) {
   store.dispatch(userLoggedIn(user));
 }
 
+/*
+ * Because We have a conflict with component blockers:
+ * https://github.com/ReactTraining/react-router/blob/master/packages/react-router/docs/guides/blocked-updates.md
+ * We need to instead of render <App /> component, we render Route with component
+ * App, this will pass location as props and then we pass location to the other
+  * Routes on App component
+*/
+
 ReactDOM.render(
   <BrowserRouter>
     <Provider store={store}>
-      <App />
+      <Route component={App} />
     </Provider>
   </BrowserRouter>,
   document.getElementById('root')
