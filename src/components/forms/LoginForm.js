@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Form, Button } from 'semantic-ui-react';
+import { Form, Button, Message } from 'semantic-ui-react';
 import validator from 'validator';
 
 import InlineError from '../messages/InlineError';
@@ -24,7 +24,9 @@ class LoginForm extends Component {
     const errors = this.validate(this.state.data);
     this.setState({ errors });
     if (Object.keys(errors).length === 0) {
-      this.props.submit(this.state.data);
+      this.setState({ loading: true });
+      this.props.submit(this.state.data)
+        .catch(err => this.setState({ errors: err.response.data.errors, loading: false }));
     }
   };
 
@@ -37,9 +39,13 @@ class LoginForm extends Component {
 
   render() {
     const { email, password } = this.state.data;
-    const { errors } = this.state;
+    const { errors, loading } = this.state;
     return (
-      <Form onSubmit={this.onSubmit}>
+      <Form onSubmit={this.onSubmit} loading={loading}>
+        {errors.global && <Message negative>
+          <Message.Header>Something went wrong</Message.Header>
+          <p>{errors.global}</p>
+        </Message>}
         <Form.Field error={!!errors.email}>
           <label htmlFor='email'>Email</label>
           <input
@@ -50,7 +56,7 @@ class LoginForm extends Component {
             value={email}
             onChange={this.onChange}
           />
-          {errors.email && <InlineError text={errors.email}/>}
+          {errors.email && <InlineError text={errors.email} />}
         </Form.Field>
         <Form.Field error={!!errors.password}>
           <label htmlFor='password'>Password</label>
@@ -62,7 +68,7 @@ class LoginForm extends Component {
             placeholder='Make it secure'
             onChange={this.onChange}
           />
-          {errors.password && <InlineError text={errors.password}/>}
+          {errors.password && <InlineError text={errors.password} />}
         </Form.Field>
         <Button primary>Login</Button>
       </Form>
