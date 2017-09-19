@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter, Route } from 'react-router-dom';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
+import decode from 'jwt-decode';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 import 'semantic-ui-css/semantic.min.css';
@@ -20,9 +21,13 @@ const store = createStore(
 /*
  * If we have saved the token in local storage, we are going to retrieve
  * it and dispatch the action to login the user passing the user object (
+ * Since we need to make the dashboard message to validate email disappear once
+ * the user has validated the email address, we need to get confirmed value
+ * from the token and we need to decode it and extract the email and confired
 */
 if (localStorage.bookwormJWT) {
-  const user = { token: localStorage.bookwormJWT };
+  const payload = decode(localStorage.bookwormJWT);
+  const user = { token: localStorage.bookwormJWT, email: payload.email, confirmed: payload.confirmed };
   store.dispatch(userLoggedIn(user));
 }
 

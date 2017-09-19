@@ -19,7 +19,7 @@ export const login = (credentials) => (dispatch) =>
   api.user.login(credentials)
     .then(user => {
       localStorage.bookwormJWT = user.token;
-      dispatch(userLoggedIn(user))
+      dispatch(userLoggedIn(user));
     });
 
 // We remove bookwormJTW item from local storage and the
@@ -27,5 +27,12 @@ export const login = (credentials) => (dispatch) =>
 // the userLoggedOut action will be catch in the reducer user
 export const logout = () => (dispatch) => {
   localStorage.removeItem('bookwormJWT');
-  dispatch(userLoggedOut())
+  dispatch(userLoggedOut());
 };
+
+export const confirm = (token) => (dispatch) => api.user.confirm(token)
+  .then(user => {
+    localStorage.bookwormJWT = user.token;
+    dispatch(userLoggedIn(user));
+  });
+
