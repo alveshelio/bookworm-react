@@ -14,9 +14,12 @@ class ConfirmationPage extends Component {
 
   componentDidMount() {
     this.props.confirm(this.props.match.params.token)
-      .then(() => this.setState({ loading: false, success: true }))
+      .then(() => {
+        this.setState({ loading: false, success: true });
+      })
       .catch(() => this.setState({ loading: false, success: false }));
   }
+
   render() {
     const { loading, success } = this.state;
     return (
@@ -25,13 +28,13 @@ class ConfirmationPage extends Component {
           loading && <Message icon>
             <Icon name='circle notched' loading />
             <Message.Header>Validating your email</Message.Header>
-        </Message>
+          </Message>
         }
         {
           !loading && success && <Message success icon>
             <Icon name='checkmark' />
             <Message.Content>
-              <Message.Header>Thank you, your email has been verified</Message.Header>
+              <Message.Header>Thank you, your email</Message.Header>
               <Link to='/dashboard'>Back to dashboard</Link>
             </Message.Content>
           </Message>
@@ -53,7 +56,15 @@ ConfirmationPage.propTypes = {
     params: PropTypes.shape({
       token: PropTypes.string.isRequired
     }).isRequired
-  }).isRequired
+  }).isRequired,
+  // message: PropTypes.
 };
 
-export default connect(null, { confirm })(ConfirmationPage);
+function mapSateToProps(state) {
+  return {
+    user: state,
+    // message: state.user.message,
+  };
+}
+
+export default connect(mapSateToProps, { confirm })(ConfirmationPage);

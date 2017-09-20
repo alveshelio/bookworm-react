@@ -1,4 +1,4 @@
-import { USER_LOGGED_IN, USER_LOGGED_OUT } from '../types';
+import { USER_LOGGED_IN, USER_LOGGED_OUT, EMAIL_CONFIRMATION_MESSAGE } from '../types';
 import api from '../api';
 
 export const userLoggedIn = user => ({
@@ -8,6 +8,11 @@ export const userLoggedIn = user => ({
 
 export const userLoggedOut = () => ({
   type: USER_LOGGED_OUT
+});
+
+export const emailConfirmationMessage = message => ({
+  type: EMAIL_CONFIRMATION_MESSAGE,
+  message
 });
 
 /* *********************************************************** */
@@ -31,8 +36,9 @@ export const logout = () => (dispatch) => {
 };
 
 export const confirm = (token) => (dispatch) => api.user.confirm(token)
-  .then(user => {
-    localStorage.bookwormJWT = user.token;
-    dispatch(userLoggedIn(user));
+  .then(result => {
+    localStorage.bookwormJWT = result.user.token;
+    dispatch(emailConfirmationMessage(result.message));
+    dispatch(userLoggedIn(result.user));
   });
 
