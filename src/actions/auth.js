@@ -35,6 +35,11 @@ export const logout = () => (dispatch) => {
   dispatch(userLoggedOut());
 };
 
+// We will confirm the user email by first dispatching the call to the api passing the token
+// then we take the result returned by the server and we save the token in localStorage and
+// we then dispatch emailConfirmationMessage to set the message that will be displayed
+// in the frontend to the user and we finally dispatch userLoggedIn passing the user so
+// we can automatically login the user once he verified his email.
 export const confirm = (token) => (dispatch) => api.user.confirm(token)
   .then(result => {
     localStorage.bookwormJWT = result.user.token;
