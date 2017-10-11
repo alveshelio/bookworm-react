@@ -1,5 +1,6 @@
 import { USER_LOGGED_IN, USER_LOGGED_OUT, EMAIL_CONFIRMATION_MESSAGE } from '../types';
 import api from '../api';
+import setAuthorizationHeader from '../utils/setAuthorizationHeader';
 
 export const userLoggedIn = user => ({
   type: USER_LOGGED_IN,
@@ -24,6 +25,7 @@ export const login = (credentials) => (dispatch) =>
   api.user.login(credentials)
     .then(user => {
       localStorage.bookwormJWT = user.token;
+      setAuthorizationHeader(user.token);
       dispatch(userLoggedIn(user));
     });
 
@@ -32,6 +34,7 @@ export const login = (credentials) => (dispatch) =>
 // the userLoggedOut action will be catch in the reducer user
 export const logout = () => (dispatch) => {
   localStorage.removeItem('bookwormJWT');
+  setAuthorizationHeader();
   dispatch(userLoggedOut());
 };
 
@@ -40,12 +43,13 @@ export const logout = () => (dispatch) => {
 // we then dispatch emailConfirmationMessage to set the message that will be displayed
 // in the frontend to the user and we finally dispatch userLoggedIn passing the user so
 // we can automatically login the user once he verified his email.
-export const confirm = (token) => (dispatch) => api.user.confirm(token)
-  .then(result => {
-    localStorage.bookwormJWT = result.user.token;
-    dispatch(emailConfirmationMessage(result.message));
-    dispatch(userLoggedIn(result.user));
-  });
+export const confirm = (token) => (dispatch) =>
+  api.user.confirm(token)
+    .then(result => {
+      localStorage.bookwormJWT = result.user.token;
+      dispatch(emailConfirmationMessage(result.message));
+      dispatch(userLoggedIn(result.user));
+    });
 
 export const resetPasswordRequest = ({ email }) => () => api.user.resetPasswordRequest(email);
 
